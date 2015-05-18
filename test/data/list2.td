@@ -1,18 +1,12 @@
 Today:
-        Eat
-            Apples
-            Pears
-            Nuts
-
-
-
-        Buy
-            Shampoo
-            Soap
-
-
-
-
+  Eat
+    Apples
+    Pears
+    Nuts
+       
+  Buy
+    Shampoo
+    Soap
 
 Tomorrow:
     Rest

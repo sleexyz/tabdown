@@ -1,3 +1,0 @@
-Parent
-        orphan grandchild
-   child 
