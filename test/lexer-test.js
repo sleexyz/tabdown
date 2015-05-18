@@ -9,7 +9,7 @@ const biglist = fs.readFileSync(__dirname + "/data/biglist.td");
 const list_tokens = JSON.parse(fs.readFileSync(__dirname + "/data/list-tokens.json").toString());
 
 describe('Lexer', function() {
-    it("lexes initial edge cases", function() {
+    it("should lex simple edge cases", function() {
         let lexer = new Lexer();
         assert.deepEqual(lexer.lex(""), []);
         assert.deepEqual(lexer.lex("hello"),
@@ -17,22 +17,23 @@ describe('Lexer', function() {
         assert.deepEqual(lexer.lex("hello\nworld"),
             [Tokens.EXPR("hello"), Tokens.EXPR("world")]);
     });
-    it("ignores linebreaks by default", function() {
+    it("should ignores linebreaks by default", function() {
         let lexer1 = new Lexer(),
             lexer2 = new Lexer({linebreaks: false});
         assert.deepEqual(lexer1.lex("hello\n\nworld"),
             [Tokens.EXPR("hello"), Tokens.EXPR("world")]);
         assert.deepEqual(lexer2.lex("hello\n\nworld"),
             [Tokens.EXPR("hello"), Tokens.EXPR("world")]);
+        assert.deepEqual(lexer1.lex("\n"), []);
     });
-    it("fails to lex bad indentation", function() {
+    it("should fail on bad indentation", function() {
         let lexer = new Lexer();
         // orphan
         assert.throws(() => (lexer.lex("hello\n  world\n !"))
-            , /inconsistent/);
+            , /Inconsistent/);
         // mixed tabs and spaces
         assert.throws(() => (lexer.lex("hello\n  world\n\t!"))
-            , /inconsistent/);
+            , /mix/);
     });
     it("lexes list.td", function() {
         let lexer = new Lexer();
@@ -42,16 +43,18 @@ describe('Lexer', function() {
     describe("(linebreaks = true)", function() {
         it("lexes initial edge cases", function() {
             let lexer = new Lexer({linebreaks: true});
-            assert.deepEqual(lexer.lex("\nhello"),
-                [Tokens.EXPR(""), Tokens.EXPR("hello")]);
+            assert.deepEqual(lexer.lex("\nA"),
+                [Tokens.EXPR(""), Tokens.EXPR("A")]);
+            assert.deepEqual(lexer.lex("\nA\n \nB"),
+                [Tokens.EXPR(""), Tokens.EXPR("A"), Tokens.EXPR(""), Tokens.EXPR("B")]);
             //ignores trailing newlines
-            assert.deepEqual(lexer.lex("\nhello\n"),
-                [Tokens.EXPR(""), Tokens.EXPR("hello")]);
-            assert.deepEqual(lexer.lex("\nhello\n\nworld!"),
-                [Tokens.EXPR(""), Tokens.EXPR("hello"), Tokens.EXPR(""), Tokens.EXPR("world!")]);
+            assert.deepEqual(lexer.lex("\nA\n"),
+                [Tokens.EXPR(""), Tokens.EXPR("A")]);
             //properly assigns newlines
-            assert.deepEqual(lexer.lex("hello\n world\n\n!"),
-                [Tokens.EXPR("hello"), Tokens.INDENT(1), Tokens.EXPR("world"),  Tokens.DEDENT(1), Tokens.EXPR(""), Tokens.EXPR("!")]);
+            assert.deepEqual(lexer.lex("A\n B\n\n C"),
+                [Tokens.EXPR("A"), Tokens.INDENT(1), Tokens.EXPR("B"),  Tokens.EXPR(""), Tokens.EXPR("C"), Tokens.DEDENT(1)]);
+            assert.deepEqual(lexer.lex("A\n B\n\nC"),
+                [Tokens.EXPR("A"), Tokens.INDENT(1), Tokens.EXPR("B"),  Tokens.DEDENT(1), Tokens.EXPR(""), Tokens.EXPR("C")]);
         });
     });
 });
