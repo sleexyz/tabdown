@@ -8,7 +8,8 @@
     "url": "git://github.com/freshdried/tabdown.git"
   },
   "devDependencies": {
-    "babel-core": "^5.4.3"
+    "babel-core": "^5.4.3",
+    "lodash": "^3.9.1"
   },
   "author": "Sean Lee <freshdried@gmail.com> (http://sean.lee.mx)",
   "license": "MIT",

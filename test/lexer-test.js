@@ -18,7 +18,7 @@ describe('Lexer', function() {
         assert.deepEqual(lexer.lex("hello\nworld"),
             [Tokens.EXPR("hello"), Tokens.EXPR("world")]);
     });
-    it("should ignores linebreaks by default", function() {
+    it("should ignore linebreaks by default", function() {
         let lexer1 = new Lexer(),
             lexer2 = new Lexer({linebreaks: false});
         assert.deepEqual(lexer1.lex("hello\n\nworld"),
